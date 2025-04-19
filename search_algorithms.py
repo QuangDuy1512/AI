@@ -1,0 +1,25 @@
+import heapq
+import itertools
+
+def greedy_best_first(start_state):
+    visited = set()
+    heap = []
+    counter = itertools.count()  # Đếm thứ tự để đảm bảo heap có thể so sánh được
+
+    heapq.heappush(heap, (start_state.heuristic(), next(counter), [start_state]))  # Dùng heuristic của start_state
+
+    while heap:
+        _, _, path = heapq.heappop(heap)  # Lấy trạng thái có heuristic nhỏ nhất
+        current = path[-1]
+
+        if current.is_goal():  # Kiểm tra nếu đã đạt đến mục tiêu
+            return path  # Trả về đường đi đến mục tiêu
+
+        visited.add(current.serialize())  # Đánh dấu trạng thái này đã được duyệt
+
+        for neighbor in current.get_neighbors():  # Xử lý các trạng thái kề
+            if neighbor.serialize() not in visited:
+                new_path = path + [neighbor]
+                heapq.heappush(heap, (neighbor.heuristic(), next(counter), new_path))  # Đẩy vào heap với heuristic mới
+
+    return None  # Nếu không tìm thấy đường đi đến mục tiêu
