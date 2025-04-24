@@ -6,6 +6,7 @@ class PuzzleBoard:
         self.board = board
         self.size = len(board)
         self.empty_pos = self.find_empty()
+        self.move_count = 0
 
     def find_empty(self):
         for i in range(self.size):
@@ -67,3 +68,12 @@ class PuzzleBoard:
                 distance += abs(goal_row - current_row) + abs(goal_col - current_col)  # Tính Manhattan distance
 
         return distance
+    def move_tile(self, pos):
+        row, col = pos
+        empty_row, empty_col = self.empty_pos
+
+        if abs(row - empty_row) + abs(col - empty_col) == 1:
+            self.board[empty_row][empty_col], self.board[row][col] = self.board[row][col], self.board[empty_row][empty_col]
+            self.empty_pos = (row, col)
+            self.move_count += 1
+
